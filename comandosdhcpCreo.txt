@@ -1,0 +1,47 @@
+enable
+conf t
+ip dhcp excluded-address 192.168.10.1 192.168.10.10
+ip dhcp excluded-address 192.168.11.1 192.168.11.10
+ip dhcp pool R1fa0
+network 192.168.10.0 255.255.255.0
+default-router 192.168.10.1
+dns-server 192.168.30.254 
+show ip dhcp pool
+
+ip dhcp pool R1fa01
+network 192.168.11.0 255.255.255.0
+default-router 192.168.11.1
+dns-server 192.168.30.254 
+show ip dhcp pool
+
+ip dhcp pool R1fa01S
+network 192.168.30.0 255.255.255.0
+default-router 192.168.30.1
+dns-server 192.168.30.254
+exit
+
+
+
+--------------------computadora 1--------
+show ip
+ip dhcp
+
+-----ISP------
+enable 
+conf 
+ip route 209.165.200.248 255.255.255.248 209.165.200.225
+
+----R1-----
+conf t 
+router ospf 1
+network 192.168.10.0 0.0.0.255 area 1
+network 192.168.11.0 0.0.0.255 area 1
+network 10.1.1.0 0.0.0.3 area 0
+
+
+conf t
+router ospf 1
+network 10.1.1.0 0.0.0.3 area 0
+default-information originate always
+
+ip nat inside source static 192.168.30.254 209.165.200.254

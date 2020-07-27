@@ -1,0 +1,158 @@
+configure terminal
+username cisco privilege 15 password cisco
+enable secret 1234
+service password-encryption
+ip domain-name adminredes.escom.ipn.mx
+ip ssh rsa keypair-name sshkey
+crypto key generate rsa usage-key label sshkey modulus 1024
+ip ssh v 2
+ip ssh time-out 30
+ip ssh authentication-retries 3
+line vty 0 15
+password cisco
+login local
+transport input ssh
+exit
+
+configure terminal
+interface fa1/0
+channel-group 1 mode on
+interface fa1/1
+channel-group 1 mode on
+interface fa1/2
+channel-group 1 mode on
+interface fa1/3
+channel-group 1 mode on
+exit
+exit
+wr
+
+configure terminal
+interface fa1/0
+channel-group 1 mode on
+interface fa1/1
+channel-group 1 mode on
+interface fa1/2
+channel-group 1 mode on
+interface fa1/3
+channel-group 1 mode on
+interface fa1/4
+channel-group 2 mode on
+interface fa1/5
+channel-group 2 mode on
+interface fa1/6
+channel-group 2 mode on
+interface fa1/7
+channel-group 2 mode on
+exit
+exit
+wr
+
+configure terminal
+interface fa1/14
+switchport mode trunk
+switchport trunk allowed vlan all
+interface fa1/4
+channel-group 2 mode on
+interface fa1/5
+channel-group 2 mode on
+interface fa1/6
+channel-group 2 mode on
+interface fa1/7
+channel-group 2 mode on
+exit
+exit
+wr
+
+configure terminal
+interface vlan 1
+ip address 192.168.1.11 255.255.255.0
+no shutdown
+interface vlan 10
+ip address 192.168.10.1 255.255.255.0
+no shutdown
+interface vlan 20
+ip address 192.168.20.1 255.255.255.0
+no shutdown
+interface vlan 30
+ip address 192.168.30.1 255.255.255.0
+no shutdown
+exit
+exit
+configure terminal
+interface port-channel 1
+switchport mode trunk
+switchport trunk allowed vlan all
+end
+wr
+
+configure terminal
+interface vlan 1
+ip address 192.168.1.12 255.255.255.0
+no shutdown
+interface port-channel 1
+switchport mode trunk
+switchport trunk allowed vlan all
+exit
+interface port-channel 2
+switchport mode trunk
+switchport trunk allowed vlan all
+end
+wr
+
+configure terminal
+interface vlan 1
+ip address 192.168.1.13 255.255.255.0
+no shutdown
+interface port-channel 2
+switchport mode trunk
+switchport trunk allowed vlan all
+end
+wr
+
+
+configure terminal
+interface fa0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+interface fa0/0.10
+encapsulation dot1Q 10
+ip address 192.168.10.1 255.255.255.0
+interface fa0/0.20
+encapsulation dot1Q 20
+ip address 192.168.20.1 255.255.255.0
+interface fa0/0.30
+encapsulation dot1Q 30
+ip address 192.168.30.1 255.255.255.0
+end
+
+
+--------------------------------------------------------
+
+vlan database
+vtp domain admin-vlan
+vtp password 12345678
+vtp v2-mode
+vtp pruning v2-mode
+vtp server
+exit
+write
+vlan database
+vlan 10 name Vlan10
+vlan 20 name Vlan20
+vlan 30 name Vlan30
+exit
+show vlan-switch
+
+
+vlan database
+vtp domain admin-vlan
+vtp password 12345678
+vtp client
+vtp v2-mode
+vtp pruning v2-mode
+exit
+show vlan-switch
+
+Microsoft.XboxGameCallableUI_1000.18362.449.0_neutral_neutral_cw5n1h2txyewy
+Add-AppxPackage -register "C:\Program Files\WindowsApps\Microsoft.XboxGameCallableUI_1000.18362.449.0_neutral_neutral_cw5n1h2txyewy\AppxManifest.xml" -DisableDevelopmentMode

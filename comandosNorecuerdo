@@ -1,0 +1,141 @@
+router 5
+conf t
+int fa2/0
+ip address 192.168.0.1 255.255.255.252
+no shutdown 
+exit
+int fa0/0
+ip address 192.168.0.5 255.255.255.252
+no shutdown 
+exit
+int fa0/1
+ip address 192.168.0.9 255.255.255.252
+no shutdown 
+exit
+int fa1/0
+ip address 192.168.0.13 255.255.255.252
+no shutdown 
+exit
+router rip 
+version 2
+network 192.168.0.0
+network 192.168.0.4
+network 192.168.0.8
+network 192.168.0.12
+exit
+
+---------------------------------------------------
+router 1 
+
+conf t
+int fa0/0
+ip address 192.168.0.6 255.255.255.252
+no shutdown 
+exit
+int fa0/1
+ip address 192.168.0.17 255.255.255.252
+no shutdown
+exit
+router rip 
+version 2
+network 192.168.0.4
+network 192.168.0.16
+exit
+
+---------------------------------------------------
+router 2 
+
+conf t
+int fa0/0
+ip address 192.168.0.21 255.255.255.252
+no shutdown 
+exit
+int fa0/1
+ip address 192.168.0.10 255.255.255.252
+no shutdown
+exit
+router rip 
+version 2
+network 192.168.0.8
+network 192.168.0.20
+exit
+
+..................................................
+router 3
+
+conf t
+int fa0/0
+ip address 192.168.0.14 255.255.255.252
+no shutdown 
+exit
+int fa0/1
+ip address 192.168.0.25 255.255.255.252
+no shutdown
+exit
+router rip 
+version 2
+network 192.168.0.12
+network 192.168.0.24
+exit
+
+-----------------------------------------------
+router 6
+
+conf t
+int fa2/0
+ip address 192.168.0.29 255.255.255.252
+no shutdown 
+exit
+int fa0/0
+ip address 192.168.0.22 255.255.255.252
+no shutdown 
+exit
+int fa0/1
+ip address 192.168.0.18 255.255.255.252
+no shutdown 
+exit
+int fa1/0
+ip address 192.168.0.26 255.255.255.252
+no shutdown 
+exit
+router rip 
+version 2
+network 192.168.0.28
+network 192.168.0.24
+network 192.168.0.20
+network 192.168.0.16
+exit
+
+-------------------------------------
+
+router 4
+
+conf t
+int fa0/0
+ip address 192.168.0.30 255.255.255.252
+no shutdown 
+exit
+router rip 
+version 2
+network 192.168.0.28
+exit
+
+
+----------------------------------------
+
+configure terminal
+username admin privilege 15 password admin01
+enable secret 1234
+service password-encryption
+ip domain-name adminredes.escom.ipn.mx
+ip ssh rsa keypair-name sshkey
+crypto key generate rsa usage-key label sshkey modulus 1024
+ip ssh v 2
+ip ssh time-out 30
+ip ssh authentication-retries 3
+line vty 0 15
+password cisco
+login local
+transport input ssh telnet
+exit
+exit

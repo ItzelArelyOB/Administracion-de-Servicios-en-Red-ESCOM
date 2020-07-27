@@ -1,0 +1,109 @@
+-----------------PC_1--------
+ip 10.10.1.100/24 10.10.1.1
+save 
+show ip 
+
+
+-----------------PC_2--------
+ip 10.10.2.100/24 10.10.2.1
+save 
+show ip 
+
+-----------------PC_3--------
+ip 10.10.3.100/24 10.10.3.1
+save 
+show ip 
+
+---------------Router1-----------
+conf t
+int loopback0
+ip address 10.10.255.1 255.255.255.255
+exit
+int fa0/0
+ip address 10.10.1.1 255.255.255.0
+no shutdown
+exit
+int fa5/0
+ip address 10.10.13.1 255.255.255.252
+no shutdown
+exit
+router ospf 1
+router-id 10.10.255.1 
+network 10.10.1.0 0.0.0.255 area 1
+network 10.10.13.0 0.0.0.3 area 0
+
+---------------Router2-----------
+conf t
+int loopback0
+ip address 10.10.255.2 255.255.255.255
+exit
+int fa0/0
+ip address 10.10.2.1 255.255.255.0
+no shutdown
+exit
+int fa5/0
+ip address 10.10.23.2 255.255.255.252
+no shutdown
+exit
+router ospf 1
+router-id 10.10.255.2
+network 10.10.2.0 0.0.0.255 area 2
+network 10.10.23.0 0.0.0.3 area 0
+
+
+---------------Router3-----------
+conf t
+int loopback0
+ip address 10.10.255.3 255.255.255.255
+exit
+int fa0/0
+ip address 10.10.3.1 255.255.255.0
+no shutdown
+exit
+int fa1/0
+ip address 10.10.23.1 255.255.255.252
+no shutdown
+exit
+int fa2/0
+ip address 10.10.13.2 255.255.255.252
+no shutdown
+exit
+router ospf 1
+router-id 10.10.255.3
+network 10.10.3.0 0.0.0.255 area 0
+network 10.10.13.0 0.0.0.3 area 0
+network 10.10.23.0 0.0.0.3 area 0
+
+-------------------ROUTER 1----------------------
+access-list 101 permit icmp any any
+access-list 101 remark "match icmp"
+access-list 105 remark "match http"
+access-list 105 permit tcp any any eq www
+
+conf t
+int fa0/0
+service-policy input FROM_HOST
+exit
+int fa5/0
+service-policy output TO_CORE
+exit
+
+show running-config interface f5/0
+
+int fa0/0
+service-policy input FROM_HOST
+exit
+int fa1/0
+service-policy output TO_CORE
+exit
+int fa2/0
+service-policy output TO_CORE
+exit
+
+show policy-map interface f0/0 input class MATCH_HTTP
+
+show policy-map interface f1/0 output class HTTP_TO_CORE
+
+show policy-map interface f5/0 output class ICMP_TO_CORE
+
+show policy-map interface f2/0 output class ICMP_TO_CORE

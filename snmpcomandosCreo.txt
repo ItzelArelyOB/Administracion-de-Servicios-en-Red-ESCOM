@@ -1,0 +1,163 @@
+---------------Router1-----------
+conf t
+int loopback0
+ip address 192.168.10.1 255.255.255.0
+exit
+int fa0/0
+ip address 192.168.0.1 255.255.255.252
+no shutdown
+exit
+int fa0/1
+ip address 192.168.0.5 255.255.255.252
+no shutdown
+exit
+int fa1/0
+ip address 192.168.0.9 255.255.255.252
+no shutdown
+exit
+int fa2/0
+ip address 192.168.0.13 255.255.255.252
+no shutdown
+exit
+router ospf 1
+router-id 192.168.10.1
+network 192.168.0.0 0.0.0.3 area 0
+network 192.168.0.4 0.0.0.3 area 0
+network 192.168.0.8 0.0.0.3 area 0
+network 192.168.0.12 0.0.0.3 area 0
+
+---------------Router2-----------
+conf t
+int loopback0
+ip address 192.168.10.2 255.255.255.0
+exit
+int fa0/0
+ip address 192.168.0.17 255.255.255.252
+no shutdown
+exit
+int fa0/1
+ip address 192.168.0.6 255.255.255.252
+no shutdown
+exit
+router ospf 1
+router-id 192.168.10.2
+network 192.168.0.4 0.0.0.3 area 0
+network 192.168.0.16 0.0.0.3 area 0
+
+---------------Router3-----------
+conf t
+int loopback0
+ip address 192.168.10.3 255.255.255.0
+exit
+int fa0/0
+ip address 192.168.0.10 255.255.255.252
+no shutdown
+exit
+int fa0/1
+ip address 192.168.0.25 255.255.255.252
+no shutdown
+exit
+int fa1/0
+ip address 192.168.0.21 255.255.255.252
+no shutdown
+exit
+router ospf 1
+router-id 192.168.10.3
+network 192.168.0.8 0.0.0.3 area 0
+network 192.168.0.20 0.0.0.3 area 0
+network 192.168.0.24 0.0.0.3 area 0
+
+---------------Router4-----------
+conf t
+int loopback0
+ip address 192.168.10.4 255.255.255.0
+exit
+int fa0/0
+ip address 192.168.0.26 255.255.255.252
+no shutdown
+exit
+int fa0/1
+ip address 192.168.0.14 255.255.255.252
+no shutdown
+exit
+int fa1/0
+ip address 192.168.0.30 255.255.255.252
+no shutdown
+exit
+router ospf 1
+router-id 192.168.10.4
+network 192.168.0.12 0.0.0.3 area 0
+network 192.168.0.24 0.0.0.3 area 0
+network 192.168.0.28 0.0.0.3 area 0
+
+---------------Router5-----------
+conf t
+int loopback0
+ip address 192.168.10.5 255.255.255.0
+exit
+int fa0/0
+ip address 192.168.0.18 255.255.255.252
+no shutdown
+exit
+int fa0/1
+ip address 192.168.0.22 255.255.255.252
+no shutdown
+exit
+int fa1/0
+ip address 192.168.0.33 255.255.255.252
+no shutdown
+exit
+int fa2/0
+ip address 192.168.0.29 255.255.255.252
+no shutdown
+exit
+router ospf 1
+router-id 192.168.10.5
+network 192.168.0.16 0.0.0.3 area 0
+network 192.168.0.20 0.0.0.3 area 0
+network 192.168.0.28 0.0.0.3 area 0
+network 192.168.0.32 0.0.0.3 area 0
+
+--------------ISP---------------------
+conf t
+int loopback0
+ip address 192.168.10.6 255.255.255.0
+exit
+int fa0/0
+ip address 192.168.0.34 255.255.255.252
+no shutdown
+exit
+router ospf 1
+network 192.168.0.32 0.0.0.3 area 0
+
+
+---------telnet y ssh-----------------------
+configure terminal
+username cisco privilege 15 password cisco
+enable secret 1234
+service password-encryption
+ip domain-name adminredes.escom.ipn.mx
+crypto key generate rsa usage-key label sshkey modulus 1024
+ip ssh rsa keypair-name sshkey
+ip ssh v 2
+ip ssh time-out 30
+ip ssh authentication-retries 3
+line vty 0 15
+password cisco
+login local
+transport input ssh telnet
+exit
+exit
+
+
+-----------CONFIGURACION SNMP ROUTERS-----
+conf t
+ip access-list standard SNMP_ACL
+permit 192.168.0.2 0.0.0.3
+snmp-server community 4CM1 rw SNMP_ACL
+snmp-server location miCasita
+snmp-server contact Itzelarit16@gmail.com
+snmp-server enable traps
+snmp-server host 192.168.0.2 traps version 2c 4CM1
+exit
+debug snmp packets
